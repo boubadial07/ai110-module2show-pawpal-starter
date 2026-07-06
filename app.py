@@ -1,5 +1,7 @@
 import streamlit as st
 
+from pawpal_system import Scheduler, Task
+
 st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
 
 st.title("🐾 PawPal+")
@@ -71,18 +73,47 @@ else:
 st.divider()
 
 st.subheader("Build Schedule")
-st.caption("This button should call your scheduling logic once you implement it.")
+st.caption("PawPal+ picks the most important tasks that fit your available time.")
+
+available_minutes = st.number_input(
+    "Time available today (minutes)", min_value=0, max_value=1440, value=60, step=15
+)
 
 if st.button("Generate schedule"):
-    st.warning(
-        "Not implemented yet. Next step: create your scheduling logic (classes/functions) and call it here."
-    )
-    st.markdown(
-        """
-Suggested approach:
-1. Design your UML (draft).
-2. Create class stubs (no logic).
-3. Implement scheduling behavior.
-4. Connect your scheduler here and display results.
-"""
-    )
+    if not st.session_state.tasks:
+        st.info("Add at least one task above before generating a schedule.")
+    else:
+        tasks = [
+            Task(
+                title=t["title"],
+                duration_minutes=t["duration_minutes"],
+                priority=t["priority"],
+            )
+            for t in st.session_state.tasks
+        ]
+        plan = Scheduler(tasks).build_plan(available_minutes=int(available_minutes))
+
+        st.markdown(f"### 📋 Daily plan for {pet_name}")
+        if plan.scheduled:
+            st.table(
+                [
+                    {
+                        "Task": t.title,
+                        "Duration (min)": t.duration_minutes,
+                        "Priority": t.priority,
+                    }
+                    for t in plan.scheduled
+                ]
+            )
+            st.success(
+                f"Scheduled {len(plan.scheduled)} task(s) — "
+                f"{plan.total_minutes} of {int(available_minutes)} min used."
+            )
+        else:
+            st.warning("No tasks fit in the available time.")
+
+        if plan.skipped:
+            st.caption("Skipped (didn't fit): " + ", ".join(t.title for t in plan.skipped))
+
+        with st.expander("Why this plan?"):
+            st.text(plan.explanation)
