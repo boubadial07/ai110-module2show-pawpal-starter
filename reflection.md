@@ -43,7 +43,7 @@ I used AI throughout the project: to review my UML design, to scaffold the class
 
 **b. Judgment and verification**
 
-The AI suggested several additions to my original design — a `duration_minutes` field, a `build_plan()` method, and a whole new `DailyPlan` class. I didn't just take these on faith; I checked each one against the actual requirement in the README (planning around available time and explaining the plan) and only kept the ones that clearly served that goal. I also verified the implementation rather than trusting it: I ran the full test suite and confirmed all 23 tests passed, and I ran the scheduler on a real set of tasks to see that the output made sense (essentials scheduled first, lower-priority grooming skipped when time ran out).
+The AI suggested several additions to my original design: a `duration_minutes` field, a `build_plan()` method, and a whole new `DailyPlan` class. I didn't just take these on faith; I checked each one against the actual requirement in the README (planning around available time and explaining the plan) and only kept the ones that clearly served that goal. I also verified the implementation rather than trusting it: I ran the full test suite and confirmed all 23 tests passed, and I ran the scheduler on a real set of tasks to see that the output made sense (essentials scheduled first, lower-priority grooming skipped when time ran out).
 
 ---
 
